@@ -14,7 +14,14 @@ from django.http import HttpResponseForbidden
 from openedx.core.djangoapps.theming.helpers import get_current_request
 from six import text_type
 
-from student.models import User, UserProfile, Registration, email_exists_or_retired, username_exists_or_retired
+from student.models import (
+    AccountRecovery,
+    User,
+    UserProfile,
+    Registration,
+    email_exists_or_retired,
+    username_exists_or_retired
+)
 from student import forms as student_forms
 from student import views as student_views
 from util.model_utils import emit_setting_changed_event
@@ -131,6 +138,7 @@ def update_account_settings(requesting_user, update, username=None):
         username = requesting_user.username
 
     existing_user, existing_user_profile = _get_user_and_profile(username)
+    account_recovery = _get_account_recovery(existing_user)
 
     if requesting_user.username != username:
         raise errors.UserNotAuthorized()
@@ -194,12 +202,15 @@ def update_account_settings(requesting_user, update, username=None):
 
     if changing_secondary_email:
         try:
-            student_views.validate_secondary_email(existing_user_profile, update["secondary_email"])
+            student_views.validate_secondary_email(account_recovery, update["secondary_email"])
         except ValueError as err:
             field_errors["secondary_email"] = {
                 "developer_message": u"Error thrown from validate_secondary_email: '{}'".format(text_type(err)),
                 "user_message": text_type(err)
             }
+        else:
+            account_recovery.secondary_email = update["secondary_email"]
+            account_recovery.save()
 
     # If the user asked to change full name, validate it
     if changing_full_name:
@@ -586,6 +597,18 @@ def _get_user_and_profile(username):
     return existing_user, existing_user_profile
 
 
+def _get_account_recovery(user):
+    """
+    helper method to return the account recovery object based on user.
+    """
+    try:
+        account_recovery = user.account_recovery
+    except ObjectDoesNotExist:
+        account_recovery = AccountRecovery(user=user)
+
+    return account_recovery
+
+
 def _validate(validation_func, err, *args):
     """Generic validation function that returns default on
     no errors, but the message associated with the err class
@@ -742,7 +765,7 @@ def _validate_secondary_email_doesnt_exist(email):
     :return: None
     :raises: errors.AccountEmailAlreadyExists
     """
-    if email is not None and UserProfile.objects.filter(secondary_email=email).exists():
+    if email is not None and AccountRecovery.objects.filter(secondary_email=email).exists():
         # pylint: disable=no-member
         raise errors.AccountEmailAlreadyExists(accounts.EMAIL_CONFLICT_MSG.format(email_address=email))
 

@@ -912,7 +912,7 @@ def validate_new_email(user, new_email):
         raise ValueError(_('Old email is the same as the new email.'))
 
 
-def validate_secondary_email(user_profile, new_email):
+def validate_secondary_email(account_recovery, new_email):
     """
     Enforce valid email addresses.
     """
@@ -922,11 +922,11 @@ def validate_secondary_email(user_profile, new_email):
     if get_email_validation_error(new_email):
         raise ValueError(_('Valid e-mail address required.'))
 
-    if user_profile.secondary_email and new_email == user_profile.secondary_email:
+    if new_email == account_recovery.secondary_email:
         raise ValueError(_('Old email is the same as the new email.'))
 
     # Make sure that secondary email address is not same as user's primary email.
-    if new_email == user_profile.user.email:
+    if new_email == account_recovery.user.email:
         raise ValueError(_('Cannot be same as your sign in email address.'))
 
     # Make sure that secondary email address is not same as any of the primary emails.

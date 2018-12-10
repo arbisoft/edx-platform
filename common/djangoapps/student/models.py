@@ -410,7 +410,6 @@ class UserProfile(models.Model):
     # This is not visible to other users, but could introduce holes later
     user = models.OneToOneField(User, unique=True, db_index=True, related_name='profile', on_delete=models.CASCADE)
     name = models.CharField(blank=True, max_length=255, db_index=True)
-    secondary_email = models.EmailField(verbose_name=_('Secondary email address'), blank=True)
 
     meta = models.TextField(blank=True)  # JSON dictionary for future expansion
     courseware = models.CharField(blank=True, max_length=255, default='course.xml')
@@ -2880,3 +2879,14 @@ class LogoutViewConfiguration(ConfigurationModel):
     def __unicode__(self):
         """Unicode representation of the instance. """
         return u'Logout view configuration: {enabled}'.format(enabled=self.enabled)
+
+
+class AccountRecovery(models.Model):
+    """
+    Model for storing information for user's account recovery in case of access loss.
+    """
+    user = models.OneToOneField(User, related_name='account_recovery', on_delete=models.CASCADE)
+    secondary_email = models.EmailField(verbose_name=_('Secondary email address'), unique=True, null=False, blank=False)
+
+    class Meta(object):
+        db_table = "auth_accountrecovery"

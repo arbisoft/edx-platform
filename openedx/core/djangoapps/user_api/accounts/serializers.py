@@ -82,7 +82,7 @@ class UserReadOnlySerializer(serializers.Serializer):
 
     def to_representation(self, user):
         """
-        Overwrite to_native to handle custom logic since we are serializing two models as one here
+        Overwrite to_native to handle custom logic since we are serializing three models as one here
         :param user: User object
         :return: Dict serialized account
         """
@@ -91,6 +91,11 @@ class UserReadOnlySerializer(serializers.Serializer):
         except ObjectDoesNotExist:
             user_profile = None
             LOGGER.warning("user profile for the user [%s] does not exist", user.username)
+
+        try:
+            account_recovery = user.account_recovery
+        except ObjectDoesNotExist:
+            account_recovery = None
 
         accomplishments_shared = badges_enabled()
 
@@ -148,9 +153,16 @@ class UserReadOnlySerializer(serializers.Serializer):
                         user_profile.social_links.all(), many=True
                     ).data,
                     "extended_profile": get_extended_profile(user_profile),
-                    "secondary_email": user_profile.secondary_email,
                 }
             )
+
+        if account_recovery:
+            if is_secondary_email_feature_enabled_for_user(user):
+                data.update(
+                    {
+                        "secondary_email": account_recovery.secondary_email,
+                    }
+                )
 
         if self.custom_fields:
             fields = self.custom_fields
@@ -158,10 +170,6 @@ class UserReadOnlySerializer(serializers.Serializer):
             fields = _visible_fields(user_profile, user, self.configuration)
         else:
             fields = self.configuration.get('public_fields')
-
-        # Do not display secondary email input field, if secondary email feature is not enabled for the current user.
-        if 'secondary_email' in fields and not is_secondary_email_feature_enabled_for_user(user):
-            fields.remove('secondary_email')
 
         return self._filter_fields(
             fields,
@@ -204,8 +212,7 @@ class AccountLegacyProfileSerializer(serializers.HyperlinkedModelSerializer, Rea
         model = UserProfile
         fields = (
             "name", "gender", "goals", "year_of_birth", "level_of_education", "country", "social_links",
-            "mailing_address", "bio", "profile_image", "requires_parental_consent", "language_proficiencies",
-            "secondary_email"
+            "mailing_address", "bio", "profile_image", "requires_parental_consent", "language_proficiencies"
         )
         # Currently no read-only field, but keep this so view code doesn't need to know.
         read_only_fields = ()
