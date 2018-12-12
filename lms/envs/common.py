@@ -2316,6 +2316,8 @@ INSTALLED_APPS = [
 
     # API Documentation
     'rest_framework_swagger',
+
+    'freshgrad_test',
 ]
 
 ######################### CSRF #########################################
