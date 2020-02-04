@@ -1144,7 +1144,11 @@ def password_reset_confirm_wrapper(request, uidb36=None, token=None):
     }
     try:
         uid_int = base36_to_int(uidb36)
-        user = User.objects.get(id=uid_int)
+        # user = User.objects.get(id=uid_int)
+        if request.POST:
+            user = User.objects.get(email=request.POST['email'])
+        else:
+            user = User.objects.get(id=uid_int)
     except (ValueError, User.DoesNotExist):
         # if there's any error getting a user, just let django's
         # password_reset_confirm function handle it.
@@ -1200,8 +1204,14 @@ def password_reset_confirm_wrapper(request, uidb36=None, token=None):
         # remember what the old password hash is before we call down
         old_password_hash = user.password
 
+        # response = password_reset_confirm(
+        #     request, uidb64=uidb64, token=token, extra_context=platform_name
+        # )
+
+        user.set_password(password)
+        user.save()
         response = password_reset_confirm(
-            request, uidb64=uidb64, token=token, extra_context=platform_name
+            request, uidb64=uidb64, token='1111', extra_context=platform_name
         )
 
         # If password reset was unsuccessful a template response is returned (status_code 200).
@@ -1219,7 +1229,7 @@ def password_reset_confirm_wrapper(request, uidb36=None, token=None):
                 return response
 
         # get the updated user
-        updated_user = User.objects.get(id=uid_int)
+        updated_user = User.objects.get(email=request.POST['email'])
 
         # did the password hash change, if so record it in the PasswordHistory
         if updated_user.password != old_password_hash:

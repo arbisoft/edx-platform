@@ -24,7 +24,7 @@
                         template: _.template('<li><%- content %></li>'),
 
                         msg: {
-                            email: gettext("The email address you've provided isn't formatted correctly."),
+                            email: gettext("The email address is not given."),
                             min: gettext('%(field)s must have at least %(count)d characters.'),
                             max: gettext('%(field)s can only contain up to %(count)d characters.'),
                             required: gettext('Please enter your %(field)s.')

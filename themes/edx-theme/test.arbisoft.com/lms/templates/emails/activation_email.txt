@@ -1,0 +1,48 @@
+## mako
+<%!
+import pytz
+from dateutil.parser import parse
+from datetime import datetime, timedelta
+from django.utils.translation import ugettext as _
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
+%>
+<%
+  pk_tz = pytz.timezone('Asia/Karachi')
+  contact_email = configuration_helpers.get_value('CONTACT_EMAIL', 'test@arbisoft.com')
+  contact_phone_1 = configuration_helpers.get_value('CONTACT_PHONE_1')
+  contact_phone_2 = configuration_helpers.get_value('CONTACT_PHONE_2')
+  test_datetime = configuration_helpers.get_value('ONLINE_TEST_DATE', '2025-01-01')
+  parsed_test_datetime = parse(test_datetime)
+  local_test_datetime = pk_tz.localize(parsed_test_datetime)
+  current_datetime = datetime.now(pk_tz)
+%>
+${_("Thank you for registering for "
+"{platform_name}. Please note that you will not be able to log back into your account until "
+"you have activated it.").format(platform_name=platform_name)}
+
+% if is_secure:
+Activation link: https://${ site }/activate/${ key }
+% else:
+Activation link: http://${ site }/activate/${ key }
+% endif
+
+${_("Test Date and Time: {test_datetime}").format(test_datetime=test_datetime)}
+
+
+${_("In case of any queries, please feel free to contact us at {contact_phone_1} - {contact_phone_2} or email us at {email}").format(
+contact_phone_1=contact_phone_1, contact_phone_2=contact_phone_2, email=contact_email)}
+
+${_("Note: To attempt the online test, please login with the same email address you used when registering to the account. "
+"In-case there is a discrepancy, the system won't allow you to log in.")}
+
+${_("Best,")}
+
+${_("People Operations & Development")}
+
+${_("Arbisoft (Pvt.) Ltd.")}
+
+
+${_("This email message was automatically sent by {lms_url} because someone attempted to create an "
+"account on {platform_name} using this email address.").format(
+  lms_url=lms_url, platform_name=platform_name
+)}

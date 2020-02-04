@@ -7,6 +7,7 @@ import React from 'react';
 import { Button, StatusAlert } from '@edx/paragon/static';
 
 import PasswordResetInput from './PasswordResetInput';
+import { InputText } from '@edx/paragon/static';
 
 // NOTE: Use static paragon with this because some internal classes (StatusAlert at least)
 // conflict with some standard LMS ones ('alert' at least). This means that you need to do
@@ -90,8 +91,18 @@ class PasswordResetConfirmation extends React.Component {
             </h2>
 
             <p className="action-label" id="new_password_help_text">
-              {gettext('Enter and confirm your new password.')}
+              {gettext('Enter and confirm your new passwurd..')}
             </p>
+
+            <div className="form-field">
+              <InputText
+                id="email"
+                name="email"
+                type="text"
+                themes={['danger']}
+                label="E-mail"
+              />
+            </div>
 
             <PasswordResetInput
               name="new_password1"

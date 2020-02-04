@@ -142,7 +142,7 @@ def password_instructions():
     if not reqs:
         return ungettext('Your password must contain at least {num} character.',
                          'Your password must contain at least {num} characters.',
-                         min_length).format(num=min_length)
+                         min_length).format(num=8)
     else:
         return ungettext('Your password must contain at least {num} character, including {requirements}.',
                          'Your password must contain at least {num} characters, including {requirements}.',
@@ -182,7 +182,8 @@ def validate_password(password, user=None, username=None, password_reset=True):
     errors = filter(None, errors)
 
     if errors:
-        msg = _('Enter a password with at least {requirements}.').format(requirements=' & '.join(errors))
+        # msg = _('Enter a password with at least {requirements}.').format(requirements=' & '.join(errors))
+        msg = _('Enter a password with at least 8 characters.')
         raise ValidationError(msg)
 
 

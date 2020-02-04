@@ -1,0 +1,92 @@
+<%page expression_filter="h"/>
+<%inherit file="main.html" />
+<%namespace name='static' file='static_content.html'/>
+<%!
+from django.utils.translation import ugettext as _
+from django.utils.formats import dateformat
+from django.urls import reverse
+
+from openedx.core.djangolib.markup import HTML, Text
+
+import pytz
+from dateutil.parser import parse
+from datetime import datetime, timedelta
+from django.urls import reverse
+from django.utils.translation import ugettext as _
+from django.template import RequestContext
+from entitlements.models import CourseEntitlement
+from third_party_auth import pipeline
+from util.date_utils import strftime_localized
+from opaque_keys.edx.keys import CourseKey
+from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
+from openedx.core.djangolib.js_utils import dump_js_escaped_json, js_escaped_string
+from openedx.core.djangolib.markup import HTML, Text
+
+from student.models import CourseEnrollment
+%>
+
+<%
+  pk_tz = pytz.timezone('Asia/Karachi')
+  test_datetime = configuration_helpers.get_value('ONLINE_TEST_DATE', '2025-01-01')
+  parsed_test_datetime = parse(test_datetime)
+  local_test_datetime = pk_tz.localize(parsed_test_datetime)
+  current_datetime = datetime.now(pk_tz)
+  formated_time = dateformat.format(local_test_datetime,'l jS, F g:i A T')
+%>
+
+<div class="banner">
+  <div class="block">
+    <div class="holder">
+        <div class="outer-container">
+          <div class="left-col">
+            <h1>${_("{platform_name} on {time}").format(platform_name=platform_name,time=formated_time)}</h1>
+            <button type="submit" class="action action-primary register-button" onclick="location.href='/register'">Register</button>
+            <button type="submit" class="action action-primary register-button" onclick="location.href='/login'">Login</button>
+          </div>
+          % if current_datetime < local_test_datetime:
+            <div class="sidebar-timer">
+              <%include file="${static.get_template_path('timer_sidebar.html')}" />
+            </div>
+          %endif
+        </div>
+    </div>
+  </div>
+</div>
+
+
+<main id="main" aria-label="Content" tabindex="-1">
+    <section class="home">
+
+      <%include file="${courses_list}" />
+
+    </section>
+</main>
+
+% if show_homepage_promo_video:
+  <section id="video-modal" class="modal home-page-video-modal video-modal">
+    <div class="inner-wrapper">
+      <iframe title="YouTube Video" width="640" height="360" src="//www.youtube.com/embed/${homepage_promo_video_youtube_id}?showinfo=0" frameborder="0" allowfullscreen></iframe>
+    </div>
+  </section>
+% endif
+
+<%block name="js_extra">
+   <script type="text/javascript">
+      $(window).load(function() {
+         if(getParameterByName('next')) {
+              $('#login').trigger("click");
+         }
+      })
+   </script>
+</%block>
+
+<%block name="bodyclass">home-page-test</%block>
+
+% if show_signup_immediately is not UNDEFINED:
+  ## NOTE: This won't work in production, because anonymous views are cached, so it will
+  ## show either with or without this extra js for 3 minutes at a time.
+<script type="text/javascript">
+  $(window).load(function() {$('#signup_action').trigger("click");});
+</script>
+% endif

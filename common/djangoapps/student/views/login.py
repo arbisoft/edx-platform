@@ -293,7 +293,7 @@ def _handle_failed_authentication(user):
         else:
             AUDIT_LOG.warning(u"Login failed - password for {0} is invalid".format(user.email))
 
-    raise AuthFailedError(_('Email or password is incorrect.'))
+    raise AuthFailedError(_('Password is incorrect.'))
 
 
 def _handle_successful_authentication_and_login(user, request):
@@ -308,7 +308,7 @@ def _handle_successful_authentication_and_login(user, request):
     try:
         django_login(request, user)
         if request.POST.get('remember') == 'true':
-            request.session.set_expiry(604800)
+            request.session.set_expiry(0)
             log.debug("Setting user session to never expire")
         else:
             request.session.set_expiry(0)

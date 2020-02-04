@@ -614,16 +614,16 @@ def _validate_email(email):
         errors.AccountEmailInvalid
 
     """
-    try:
-        _validate_unicode(email)
-        _validate_type(email, basestring, accounts.EMAIL_BAD_TYPE_MSG)
-        _validate_length(email, accounts.EMAIL_MIN_LENGTH, accounts.EMAIL_MAX_LENGTH, accounts.EMAIL_BAD_LENGTH_MSG)
-        validate_email.message = accounts.EMAIL_INVALID_MSG.format(email=email)
-        validate_email(email)
-    except (UnicodeError, errors.AccountDataBadType, errors.AccountDataBadLength) as invalid_email_err:
-        raise errors.AccountEmailInvalid(text_type(invalid_email_err))
-    except ValidationError as validation_err:
-        raise errors.AccountEmailInvalid(validation_err.message)
+    # try:
+    #     _validate_unicode(email)
+    #     _validate_type(email, basestring, accounts.EMAIL_BAD_TYPE_MSG)
+    #     _validate_length(email, accounts.EMAIL_MIN_LENGTH, accounts.EMAIL_MAX_LENGTH, accounts.EMAIL_BAD_LENGTH_MSG)
+    #     validate_email.message = accounts.EMAIL_INVALID_MSG.format(email=email)
+    #     validate_email(email)
+    # except (UnicodeError, errors.AccountDataBadType, errors.AccountDataBadLength) as invalid_email_err:
+    #     raise errors.AccountEmailInvalid(text_type(invalid_email_err))
+    # except ValidationError as validation_err:
+    #     raise errors.AccountEmailInvalid(validation_err.message)
 
 
 def _validate_confirm_email(confirm_email, email):
