@@ -548,7 +548,7 @@ def student_dashboard(request):
 
     """
     if request.user.username == '':
-        user = User.objects.get(username='edx')
+        user = User.objects.get(username='admin')
     else:
         user = request.user
     if not UserProfile.objects.filter(user=user).exists():
