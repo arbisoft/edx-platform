@@ -653,7 +653,7 @@ def student_dashboard(request):
 
     show_courseware_links_for = frozenset(
         enrollment.course_id for enrollment in course_enrollments
-        if has_access(request.user, 'load', enrollment.course_overview)
+        if has_access(user, 'load', enrollment.course_overview)
     )
 
     # Find programs associated with course runs being displayed. This information
@@ -708,7 +708,8 @@ def student_dashboard(request):
     # there is no verification messaging to display.
     verify_status_by_course = check_verify_status_by_course(user, course_enrollments)
     cert_statuses = {
-        enrollment.course_id: cert_info(request.user, enrollment.course_overview)
+        # enrollment.course_id: cert_info(request.user, enrollment.course_overview)
+        enrollment.course_id: cert_info(user, enrollment.course_overview)
         for enrollment in course_enrollments
     }
 
@@ -734,7 +735,7 @@ def student_dashboard(request):
             request,
             CourseRegistrationCode.objects.filter(
                 course_id=enrollment.course_id,
-                registrationcoderedemption__redeemed_by=request.user
+                registrationcoderedemption__redeemed_by=user
             ),
             enrollment.course_id
         )
@@ -834,7 +835,7 @@ def student_dashboard(request):
         'empty_dashboard_message': empty_dashboard_message,
     }
 
-    if ecommerce_service.is_enabled(request.user):
+    if ecommerce_service.is_enabled(user):
         context.update({
             'use_ecommerce_payment_flow': True,
             'ecommerce_payment_page': ecommerce_service.payment_page_url(),
