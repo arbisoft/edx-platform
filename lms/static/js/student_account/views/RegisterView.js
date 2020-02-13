@@ -236,11 +236,11 @@
                         };
 
                     FormView.prototype.postRender.call(this);
-                    $('.optional-fields').addClass('hidden');
-                    $('#toggle_optional_fields').change(function() {
-                        window.analytics.track('edx.bi.user.register.optional_fields_selected');
-                        $('.optional-fields').toggleClass('hidden');
-                    });
+                    // $('.optional-fields').addClass('hidden');
+                    // $('#toggle_optional_fields').change(function() {
+                    //     window.analytics.track('edx.bi.user.register.optional_fields_selected');
+                    //     $('.optional-fields').toggleClass('hidden');
+                    // });
 
                     // We are swapping the order of these elements here because the honor code agreement
                     // is a required checkbox field and the optional fields toggle is a cosmetic

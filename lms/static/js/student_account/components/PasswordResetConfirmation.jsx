@@ -98,9 +98,10 @@ class PasswordResetConfirmation extends React.Component {
               <InputText
                 id="email"
                 name="email"
-                type="text"
+                type="email"
                 themes={['danger']}
                 label="E-mail"
+                required
               />
             </div>
 

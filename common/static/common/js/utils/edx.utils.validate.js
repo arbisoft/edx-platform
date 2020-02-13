@@ -57,10 +57,11 @@
 
                             if (!response.isValid) {
                                 _fn.validate.removeDefault($el);
+                                console.log(min);
 
                                 response.message = _fn.validate.getMessage($el, {
                                     required: required,
-                                    min: min,
+                                    min: true,
                                     max: max,
                                     email: email
                                 });
