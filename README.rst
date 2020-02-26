@@ -33,10 +33,12 @@ Arbisoft Bugbash Settings
 .. code:: sh
 
    {
-     "ONLINE_TEST_DATE":"11th February 2020 at 3pm",
+     "ONLINE_TEST_DATE":[Date of Online Test],
      "ENABLE_COMBINED_LOGIN_REGISTRATION":true,
-     "TEST_COURSE_LINK":"https://qa-test.arbisoft.com/courses/course-v1:arbisoft+bb_01+2020/course/"
+     "TEST_COURSE_LINK":[Link]
    }
+
+For example the date can be "11th February 2020 at 3pm" and the test course link "https://example.com/courses/course-v1:arbisoft+bb_01+2020/course/"
 
 License
 -------
