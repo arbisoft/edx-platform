@@ -19,6 +19,28 @@ install edX:
 .. _edX Full Stack: https://openedx.atlassian.net/wiki/display/OpenOPS/Running+Fullstack
 .. _edX Ubuntu 16.04 64-bit Installation: https://openedx.atlassian.net/wiki/display/OpenOPS/Native+Open+edX+Ubuntu+16.04+64+bit+Installation
 
+Arbisoft Bugbash Settings
+------------
+
+1. These two repositories must be integrated with edx-platform:
+     `https://github.com/arbisoft/edx-platform/tree/arbisoft.buggy`
+     `https://github.com/arbisoft/freshgrad-test/tree/arbisoft.buggy`
+
+2. Login to the admin panel and go to Site Themes. Enable the custom theme by giving a Theme dir name: ``test.arbisoft.com``
+
+3. Now in the admin panel, go to Site configurations, check `Enabled` button and add this into the values:
+
+.. code:: sh
+
+   {
+     "COURSE_CATALOG_API_URL":"http://edx.devstack.discovery:18381/api/v1/",
+     "ENABLE_COMBINED_LOGIN_REGISTRATION":true,
+     "SHOW_DASHBOARD_TABS":false,
+     "REGISTRATION_EXTRA_FIELDS":{
+       "honor_code":"hidden",
+       "terms_of_service":"hidden"
+     }
+   }
 
 License
 -------
