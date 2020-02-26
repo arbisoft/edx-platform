@@ -33,13 +33,9 @@ Arbisoft Bugbash Settings
 .. code:: sh
 
    {
-     "COURSE_CATALOG_API_URL":"http://edx.devstack.discovery:18381/api/v1/",
+     "ONLINE_TEST_DATE":"11th February 2020 at 3pm",
      "ENABLE_COMBINED_LOGIN_REGISTRATION":true,
-     "SHOW_DASHBOARD_TABS":false,
-     "REGISTRATION_EXTRA_FIELDS":{
-       "honor_code":"hidden",
-       "terms_of_service":"hidden"
-     }
+     "TEST_COURSE_LINK":"https://qa-test.arbisoft.com/courses/course-v1:arbisoft+bb_01+2020/course/"
    }
 
 License
